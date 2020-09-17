@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -108,6 +109,8 @@ public class ClientServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        LOG.info("----in ClientServlet doGet----req.getPathInfo() = " + req.getPathInfo());
+
         // all registered clients
         if (req.getPathInfo() == null) {
             Collection<Registration> registrations = new ArrayList<>();
@@ -129,6 +132,9 @@ public class ClientServlet extends HttpServlet {
             return;
         }
         String clientEndpoint = path[0];
+
+        LOG.info("----in ClientServlet doGet----path = " + path);
+        LOG.info("----in ClientServlet doGet----clientEndpoint = " +  path[0]);
 
         // /endPoint : get client
         if (path.length == 1) {
@@ -225,6 +231,10 @@ public class ClientServlet extends HttpServlet {
         String[] path = StringUtils.split(req.getPathInfo(), '/');
         String clientEndpoint = path[0];
 
+        LOG.info("----in ClientServlet doPut----req.getPathInfo() = " + req.getPathInfo());
+        LOG.info("----in ClientServlet doPut----path = " + path);
+        LOG.info("----in ClientServlet doPut----clientEndpoint = " +  path[0]);
+
         // at least /endpoint/objectId/instanceId
         if (path.length < 3) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path");
@@ -279,6 +289,10 @@ public class ClientServlet extends HttpServlet {
         String[] path = StringUtils.split(req.getPathInfo(), '/');
         String clientEndpoint = path[0];
 
+        LOG.info("----in ClientServlet doPost----req.getPathInfo() = " + req.getPathInfo());
+        LOG.info("----in ClientServlet doPost----path = " + Arrays.toString(path));
+        LOG.info("----in ClientServlet doPost----clientEndpoint = " +  path[0]);
+
         // /clients/endPoint/LWRequest/observe : do LightWeight M2M observe request on a given client.
         if (path.length >= 3 && "observe".equals(path[path.length - 1])) {
             try {
@@ -293,7 +307,15 @@ public class ClientServlet extends HttpServlet {
 
                     // create & process request
                     ObserveRequest request = new ObserveRequest(contentFormat, target);
+
+                    LOG.info("----in ClientServlet doPost----contentFormat = " +  contentFormat);
+                    LOG.info("----in ClientServlet doPost----target = " +  target);
+                    LOG.info("----in ClientServlet doPost----request = " +  request.toString());
+
                     ObserveResponse cResponse = server.send(registration, request, extractTimeout(req));
+
+                    LOG.info("----in ClientServlet doPost----cResponse = " +  cResponse.toString());
+
                     processDeviceResponse(req, resp, cResponse);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -372,6 +394,10 @@ public class ClientServlet extends HttpServlet {
         String[] path = StringUtils.split(req.getPathInfo(), '/');
         String clientEndpoint = path[0];
 
+        LOG.info("----in ClientServlet doDelete----req.getPathInfo() = " + req.getPathInfo());
+        LOG.info("----in ClientServlet doDelete----path = " + path);
+        LOG.info("----in ClientServlet doDelete----clientEndpoint = " +  path[0]);
+
         // /clients/endPoint/LWRequest/observe : cancel observation for the given resource.
         if (path.length >= 3 && "observe".equals(path[path.length - 1])) {
             try {
@@ -409,6 +435,9 @@ public class ClientServlet extends HttpServlet {
 
     private void processDeviceResponse(HttpServletRequest req, HttpServletResponse resp, LwM2mResponse cResponse)
             throws IOException {
+
+        LOG.info("----in ClientServlet ----processDeviceResponse");
+
         if (cResponse == null) {
             LOG.warn(String.format("Request %s%s timed out.", req.getServletPath(), req.getPathInfo()));
             resp.setStatus(HttpServletResponse.SC_GATEWAY_TIMEOUT);

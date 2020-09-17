@@ -16,6 +16,7 @@
 package org.eclipse.leshan.server.demo.servlet;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +30,9 @@ import org.eclipse.leshan.server.demo.model.ObjectModelSerDes;
 import org.eclipse.leshan.server.model.LwM2mModelProvider;
 import org.eclipse.leshan.server.registration.Registration;
 import org.eclipse.leshan.server.registration.RegistrationService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ObjectSpecServlet extends HttpServlet {
 
@@ -55,6 +59,17 @@ public class ObjectSpecServlet extends HttpServlet {
             return;
         }
         String[] path = StringUtils.split(req.getPathInfo(), '/');
+
+        Logger LOG = LoggerFactory.getLogger(ObjectSpecServlet.class);
+
+        LOG.info("----in ObjectSpecServlet----req.getPathInfo() = " + req.getPathInfo());
+        LOG.info("----in ObjectSpecServlet----path = " + Arrays.toString(path));
+
+        /*for (auto entry : path) {
+            LOG.info("----in ObjectSpecServlet----path = " + entry);
+        }*/
+        
+
         if (path.length != 1) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid path");
             return;

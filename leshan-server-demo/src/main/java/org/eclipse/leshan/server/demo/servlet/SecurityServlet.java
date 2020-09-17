@@ -94,6 +94,9 @@ public class SecurityServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] path = StringUtils.split(req.getPathInfo(), '/');
 
+        LOG.info("----in SecurityServlet----req.getPathInfo() = " + req.getPathInfo());
+        LOG.info("----in SecurityServlet----path = " + path);
+
         if (path.length != 1 && "clients".equals(path[0])) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;

@@ -134,9 +134,16 @@ public class EventServlet extends EventSourceServlet {
             }
 
             if (registration != null) {
+
                 String data = new StringBuilder("{\"ep\":\"").append(registration.getEndpoint()).append("\",\"res\":\"")
                         .append(observation.getPath().toString()).append("\",\"val\":")
                         .append(gson.toJson(response.getContent())).append("}").toString();
+
+                LOG.info("----in EventServlet----data = " + data);
+                LOG.info("----in EventServlet----registration.getEndpoint() = " + registration.getEndpoint());
+                LOG.info("----in EventServlet----observation.getPath() = " + observation.getPath().toString());
+                LOG.info("----in EventServlet----gson.toJson(response.getContent()) = " + gson.toJson(response.getContent()) + "\n");
+
 
                 sendEvent(EVENT_NOTIFICATION, data, registration.getEndpoint());
             }
